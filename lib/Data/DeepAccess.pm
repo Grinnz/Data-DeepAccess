@@ -178,13 +178,14 @@ Data::DeepAccess - Access or set data in deep structures
   $things{foo}{baz} = ['a'..'z'];
   say deep_get(\%things, qw(foo baz 5)); # f
 
-  deep_get(\%things, qw(foo baz 26)) = 'AA';
-  say $things{foo}{baz}[-1]; # AA
+  deep_set(\%things, qw(foo foo), undef);
+  say deep_exists(\%things, qw(foo foo)); # 1
 
 =head1 DESCRIPTION
 
-Provides the functions L</"deep_get"> and L</"deep_set"> that traverse nested
-data structures to retrieve or set the value located by a list of keys.
+Provides the functions L</"deep_exists">, L</"deep_get">, and L</"deep_set">
+that traverse nested data structures to retrieve or set the value located by a
+list of keys.
 
 When traversing, keys are applied according to the type of referenced data
 structure. A hash will be traversed by hash key, an array by array index, and
