@@ -5,13 +5,13 @@ use warnings;
 use Carp 'croak';
 use Exporter 'import';
 use Scalar::Util 'blessed';
-use Sentinel 'sentinel';
 
 our $VERSION = '0.001';
 
 our @EXPORT_OK = qw(deep_exists deep_get deep_set);
 
 sub deep_exists {
+  croak 'deep_exists called with no arguments' unless @_;
   my ($parent, @keys) = @_;
   return !!1 unless @keys;
   foreach my $key_i (0..$#keys) {
@@ -102,7 +102,8 @@ sub deep_get {
 }
 
 sub deep_set {
-  croak 'deep_set requires a value to set' unless @_ >= 2;
+  croak 'deep_set called with no arguments' unless @_;
+  croak 'deep_set requires a value to set' unless @_ > 1;
   my $parent_ref = \$_[0];
   my @keys = @_[1..$#_-1];
   my $value = $_[-1];
@@ -207,8 +208,9 @@ reference to a hash, array, or object will result in an exception.
 
 If an object method call is the last key in a set operation or the next
 structure must be vivified, the method will be called passing the new value as
-an argument or assigned if it is treated as an lvalue. Attempting to vivify an
-object to call a method on it in a set operation will result in an exception.
+an argument or assigned if it is treated as an lvalue. Attempting to call a
+method on an undefined value or unblessed ref in a set operation will result in
+an exception.
 
 =head1 FUNCTIONS
 
@@ -232,15 +234,12 @@ If no keys are passed, returns true.
 =head2 deep_get
 
   my $value  = deep_get($structure, @keys);
-  $new_value = deep_get($structure, @keys) = $new_value;
 
 Retrieves the value from the referenced structure located by the given keys. No
 intermediate structures will be altered or vivified; a missing structure will
 result in C<undef>.
 
 If no keys are passed, returns the original structure.
-
-If used as an lvalue, acts like L</"deep_set">.
 
 =head2 deep_set
 
