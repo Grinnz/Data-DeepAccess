@@ -3,4 +3,4 @@ requires 'Carp';
 requires 'Exporter';
 requires 'Scalar::Util';
 requires 'Sentinel';
-test_requires 'Test::More' => '0.88';
+test_requires 'Test2::V0';

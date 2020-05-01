@@ -43,7 +43,47 @@ sub deep_exists {
     } elsif ($type eq 'method') {
       return !!0 unless my $sub = $structure->can($key);
       return !!1 if $key_i == $#keys;
-      $structure = $sub->();
+      $structure = $structure->$sub;
+    } else {
+      my $type = ref $structure ? ref($structure) . ' ref' : 'scalar value';
+      croak "Cannot traverse $type";
+    }
+  }
+}
+
+sub deep_get {
+  my ($structure, @keys) = @_;
+  return $structure unless @keys;
+  foreach my $key_i (0..$#keys) {
+    return undef unless defined $structure;
+    my $type = blessed $structure ? 'method' : lc ref $structure;
+    my $key = $keys[$key_i];
+    my $lvalue;
+    if (ref $key eq 'HASH') {
+      if (exists $key->{key}) {
+        ($type, $key) = ('hash', $key->{key});
+      } elsif (exists $key->{index}) {
+        ($type, $key) = ('array', $key->{index});
+      } elsif (exists $key->{method}) {
+        ($type, $key) = ('method', $key->{method});
+      } elsif (exists $key->{lvalue}) {
+        ($type, $key, $lvalue) = ('lvalue', $key->{method}, 1);
+      } else {
+        croak q{Traversal key hashref must contain 'key', 'index', 'method', or 'lvalue'};
+      }
+    }
+    if ($type eq 'hash') {
+      return undef unless exists $structure->{$key};
+      return $structure->{$key} if $key_i == $#keys;
+      $structure = $structure->{$key};
+    } elsif ($type eq 'array') {
+      return undef unless exists $structure->[$key];
+      return $structure->[$key] if $key_i == $#keys;
+      $structure = $structure->[$key];
+    } elsif ($type eq 'method') {
+      return undef unless my $sub = $structure->can($key);
+      return $structure->$sub if $key_i == $#keys;
+      $structure = $structure->$sub;
     } else {
       croak qq{Cannot traverse '@{[ref $structure]}'};
     }
