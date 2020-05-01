@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Data::DeepAccess qw(deep_exists deep_get);
+use Data::DeepAccess qw(deep_exists deep_get deep_set);
 use Test2::V0;
 
 {
@@ -37,18 +37,18 @@ ok !deep_exists($data, 'a', 0, 0), 'undef has no elements';
 is deep_get($data, 'a', 0, 0), undef, 'undef has no elements';
 ok deep_exists($data, 'a', 1, 'b'), 'hash key exists';
 is deep_get($data, 'a', 1, 'b'), $data->{a}[1]{b}, 'get hash key';
-like dies { deep_exists($data, 'a', 1, 'b', 'c') }, qr/Cannot traverse/i, 'cannot traverse defined scalar';
-like dies { deep_get($data, 'a', 1, 'b', 'c') }, qr/Cannot traverse/i, 'cannot traverse defined scalar';
+like dies { deep_exists($data, 'a', 1, 'b', 'c') }, qr/Can't traverse/i, 'cannot traverse defined scalar';
+like dies { deep_get($data, 'a', 1, 'b', 'c') }, qr/Can't traverse/i, 'cannot traverse defined scalar';
 ok deep_exists($data, 'a', 1, 0), 'hash key exists';
 ref_is deep_get($data, 'a', 1, 0), $data->{a}[1]{0}, 'get hash key';
-like dies { deep_exists($data, 'a', 1, 0, undef) }, qr/Cannot traverse/i, 'cannot traverse coderef';
-like dies { deep_get($data, 'a', 1, 0, undef) }, qr/Cannot traverse/i, 'cannot traverse coderef';
+like dies { deep_exists($data, 'a', 1, 0, 'foo') }, qr/Can't traverse/i, 'cannot traverse coderef';
+like dies { deep_get($data, 'a', 1, 0, 'foo') }, qr/Can't traverse/i, 'cannot traverse coderef';
 ok deep_exists($data, 'b', 'foo'), 'method exists';
 is deep_get($data, 'b', 'foo'), $data->{b}->foo, 'get method value';
 ok !deep_exists($data, 'b', 'bar'), 'method does not exist';
 is deep_get($data, 'b', 'bar'), undef, 'method does not exist';
-like dies { deep_exists($data, 'b', 'foo', 'bar') }, qr/Cannot traverse/i, 'cannot traverse defined scalar';
-like dies { deep_get($data, 'b', 'foo', 'bar') }, qr/Cannot traverse/i, 'cannot traverse defined scalar';
+like dies { deep_exists($data, 'b', 'foo', 'bar') }, qr/Can't traverse/i, 'cannot traverse defined scalar';
+like dies { deep_get($data, 'b', 'foo', 'bar') }, qr/Can't traverse/i, 'cannot traverse defined scalar';
 
 is $data, hash {
   field a => array {
@@ -63,5 +63,16 @@ is $data, hash {
   field c => undef;
   end;
 }, 'data structure unchanged';
+
+is deep_set(my $data1, 'a', 42), 42, 'set hash key';
+is $data1, hash {field a => 42; end}, 'vivified hash';
+is deep_set(my $data2, {key => 'b'}, 42), 42, 'set hash key';
+is $data2, hash {field b => 42; end}, 'vivified hash';
+is deep_set(my $data3, {index => 1}, 42), 42, 'set array element';
+is $data3, array {item undef; item 42; end}, 'vivified array';
+like dies { deep_set(my $data, {method => 'foo'}, 42) }, qr/Can't call/i, 'cannot call method on undef';
+like dies { deep_set(my $data, {lvalue => 'foo'}, 42) }, qr/Can't call/i, 'cannot call lvalue on undef';
+is deep_set(my $data4, 42), 42, 'set value';
+is $data4, 42, 'set value directly';
 
 done_testing;
