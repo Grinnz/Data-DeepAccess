@@ -150,7 +150,10 @@ sub deep_set {
       croak qq{Can't call method "$key" on unblessed reference} if !defined $blessed and length $reftype;
       my $package = length $reftype ? $reftype : $$parent_ref;
       croak qq{Can't locate object method "$key" via package "$package"} unless my $sub = $$parent_ref->can($key);
-      return $lvalue ? $$parent_ref->$sub = $value : $$parent_ref->$sub($value) if $key_i == $#keys;
+      if ($key_i == $#keys) {
+        $lvalue ? $$parent_ref->$sub = $value : $$parent_ref->$sub($value);
+        return $value;
+      }
       $parent_ref = \$$parent_ref->$sub;
     } else {
       croak qq{Can't traverse $type_str with key "$key"};
@@ -211,6 +214,10 @@ structure must be vivified, the method will be called passing the new value as
 an argument or assigned if it is treated as an lvalue. Attempting to call a
 method on an undefined value or unblessed ref in a set operation will result in
 an exception.
+
+Currently, undefined results from non-lvalue method calls are not vivified back
+to the object to support setting a further nested value. This may be supported
+in the future.
 
 =head1 FUNCTIONS
 

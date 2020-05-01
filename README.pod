@@ -52,6 +52,10 @@ an argument or assigned if it is treated as an lvalue. Attempting to call a
 method on an undefined value or unblessed ref in a set operation will result in
 an exception.
 
+Currently, undefined results from non-lvalue method calls are not vivified back
+to the object to support setting a further nested value. This may be supported
+in the future.
+
 =head1 FUNCTIONS
 
 All functions are exported individually.
