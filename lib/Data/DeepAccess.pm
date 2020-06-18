@@ -278,4 +278,4 @@ This is free software, licensed under:
 
 =head1 SEE ALSO
 
-L<Hash::DeepAccess>, L<Data::DPath>, L<Data::Deep>
+L<Hash::DeepAccess>, L<Data::DPath>, L<Data::Deep>, L<Data::Diver>
