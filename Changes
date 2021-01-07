@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - Add deep_val lvalue accessor (suggested by mst)
 
 0.001     2020-04-30 23:26:29 EDT
   - First release
