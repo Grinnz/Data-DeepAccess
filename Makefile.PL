@@ -19,7 +19,8 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Carp" => 0,
     "Exporter" => 0,
-    "Scalar::Util" => 0
+    "Scalar::Util" => 0,
+    "Sentinel" => 0
   },
   "TEST_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0,
@@ -40,6 +41,7 @@ my %FallbackPrereqs = (
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
   "Scalar::Util" => 0,
+  "Sentinel" => 0,
   "Test2::V0" => 0,
   "Test::More" => 0
 );
