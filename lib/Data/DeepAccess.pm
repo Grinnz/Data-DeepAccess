@@ -7,7 +7,7 @@ use Exporter 'import';
 use Scalar::Util 'blessed';
 use Sentinel 'sentinel';
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 our @EXPORT_OK = qw(deep_exists deep_get deep_set deep_val);
 
