@@ -166,8 +166,8 @@ sub deep_val :lvalue {
   croak 'deep_val called with no arguments' unless @_;
   my $parent_ref = \$_[0];
   my @keys = @_[1..$#_];
-  return sentinel get => sub { deep_get $$parent_ref, @keys },
-                  set => sub { deep_set $$parent_ref, @keys, $_[0] };
+  sentinel get => sub { deep_get $$parent_ref, @keys },
+           set => sub { deep_set $$parent_ref, @keys, $_[0] };
 }
 
 1;
