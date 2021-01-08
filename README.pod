@@ -139,6 +139,21 @@ This is free software, licensed under:
 
 =head1 SEE ALSO
 
-L<Hash::DeepAccess>, L<Data::DPath>, L<Data::Deep>, L<Data::Diver>
+Many prior modules for accessing specific items within a deep structure, which
+the author determined were either insufficient or overcomplex.
+
+=over
+
+=item * L<Hash::DeepAccess>
+
+=item * L<Data::Deep>
+
+=item * L<Data::Diver>
+
+=item * L<Data::DPath>
+
+=item * L<JSON::Pointer>
+
+=back
 
 =cut
