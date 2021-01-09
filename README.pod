@@ -102,6 +102,8 @@ assigned the value directly.
 
 =head2 deep_val
 
+I<Available since version 0.002>
+
   my $value = deep_val($structure, @keys);
   deep_val($structure, @keys) = $new_value;
 
